@@ -4,5 +4,6 @@ public enum JumpmanState
 {
 	running,
 	idle,
-	jumping
+	jumping,
+	climbing
 }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.donkeykong.game.Entities.Entity;
 
 public class World implements InputProcessor	
@@ -18,7 +19,6 @@ public class World implements InputProcessor
 	{
 		this.camera = camera;
 		shapeRenderer = new ShapeRenderer();
-		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.setAutoShapeType(true);
 	}
 	
@@ -44,7 +44,8 @@ public class World implements InputProcessor
 	
 	public void drawHitbox()
 	{
-		shapeRenderer.begin();
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.begin(ShapeType.Line);
 		for(Entity e : entities)
 		{
 			if(e != null)

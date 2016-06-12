@@ -1,8 +1,11 @@
 -- Jumpman
-Jumpman states: running, idle, jumping,
+Jumpman states: running, idle, jumping, climbing
 
 if jumpman is touching ground->
 	if he's moving set state to running
 	if he's standing set state to idle
 	else set state to jumping
 	
+https://www.packtpub.com/packtlib/book/Game-Development/9781783287291/2/ch02lvl1sec20/Understanding%20orthographic%20cameras
+http://www.gamefromscratch.com/page/LibGDX-Tutorial-series.aspx
+http://www.spriters-resource.com/arcade/dk/sheet/45989/
