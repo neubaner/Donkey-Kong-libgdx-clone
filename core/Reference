@@ -1,0 +1,8 @@
+-- Jumpman
+Jumpman states: running, idle, jumping,
+
+if jumpman is touching ground->
+	if he's moving set state to running
+	if he's standing set state to idle
+	else set state to jumping
+	
