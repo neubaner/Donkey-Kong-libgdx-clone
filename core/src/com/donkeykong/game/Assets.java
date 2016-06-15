@@ -5,5 +5,5 @@ import com.badlogic.gdx.graphics.Texture;
 
 public abstract class Assets
 {
-	public static Texture tileset = new Texture(Gdx.files.internal(""));
+	public static Texture tileset = new Texture(Gdx.files.internal("tileset.png"));
 }

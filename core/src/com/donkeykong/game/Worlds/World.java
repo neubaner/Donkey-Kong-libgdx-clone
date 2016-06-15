@@ -11,9 +11,10 @@ import com.donkeykong.game.Entities.Entity;
 
 public class World implements InputProcessor	
 {
-	ArrayList<Entity> entities = new ArrayList<Entity>();
-	ShapeRenderer shapeRenderer;
-	OrthographicCamera camera;
+	protected ArrayList<Entity> entities = new ArrayList<Entity>();
+	protected OrthographicCamera camera;
+	private ShapeRenderer shapeRenderer;
+	public boolean shouldDrawHitbox = true;
 	
 	public World(OrthographicCamera camera)
 	{
@@ -37,25 +38,29 @@ public class World implements InputProcessor
 		for(Entity e : entities)
 		{
 			if(e != null)
-				e.draw();
+				e.draw(batch);
 		}
 		batch.end();
 	}
 	
 	public void drawHitbox()
 	{
-		shapeRenderer.setProjectionMatrix(camera.combined);
-		shapeRenderer.begin(ShapeType.Line);
-		for(Entity e : entities)
+		if(shouldDrawHitbox)
 		{
-			if(e != null)
-				e.drawHitbox(shapeRenderer);
+			shapeRenderer.setProjectionMatrix(camera.combined);
+			shapeRenderer.begin(ShapeType.Line);
+			for(Entity e : entities)
+			{
+				if(e != null)
+					e.drawHitbox(shapeRenderer);
+			}
+			shapeRenderer.end();
 		}
-		shapeRenderer.end();
 	}
 	
 	public Entity addEntity(Entity e)
 	{
+		e.setWorld(this);
 		entities.add(e);
 		return e;
 	}
@@ -64,6 +69,19 @@ public class World implements InputProcessor
 	{
 		entities.remove(e);
 		return e;
+	}
+	
+	public ArrayList<Entity> getEntitiesByTag(String tag)
+	{
+		ArrayList<Entity> list = new ArrayList<Entity>();
+		
+		for(Entity e : entities)
+		{
+			if(e.getTag() == tag)
+				list.add(e);
+		}
+		
+		return list;
 	}
 
 	@Override

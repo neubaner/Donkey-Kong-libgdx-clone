@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.donkeykong.game.Entities.Jumpman;
+import com.donkeykong.game.Worlds.Level1;
 import com.donkeykong.game.Worlds.World;
 
 public class Game extends ApplicationAdapter
@@ -23,11 +23,10 @@ public class Game extends ApplicationAdapter
 	{
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(WIDTH, HEIGHT);
-		world = new World(camera);
+		world = new Level1(camera);
 		
 		camera.position.x = WIDTH *0.5f;
 		camera.position.y = HEIGHT *0.5f;
-		world.addEntity(new Jumpman());
 		
 		Gdx.input.setInputProcessor(world);
 	}
@@ -38,7 +37,7 @@ public class Game extends ApplicationAdapter
 		camera.update();
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.setProjectionMatrix(camera.projection);
+		batch.setProjectionMatrix(camera.combined);
 		world.update(Gdx.graphics.getDeltaTime());
 		world.draw(batch);
 		world.drawHitbox();

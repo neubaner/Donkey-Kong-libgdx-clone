@@ -1,32 +1,120 @@
 package com.donkeykong.game.Entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.donkeykong.game.Assets;
 import com.donkeykong.game.JumpmanState;
 
 public class Jumpman extends Entity
 {
 	private JumpmanState state;
-	private float vel;
+	private float xVelocity;
+	private float jumpForce;
+	private float gravity;
+	private float maxYVel;
 	
-	public Jumpman()
+	private TextureRegion graphic = new TextureRegion(Assets.tileset,8,0,16,16);
+	
+	public Jumpman(float x, float y)
 	{
-		super(0,0,12,12,"Jumpman");
+		super(new Vector2(x,y),new Rectangle(4,0,9,12), "Jumpman");
 		state = JumpmanState.idle; 
-		vel = 35;
+		xVelocity = 35;
+		jumpForce = 300;
+		gravity = 10;
+		maxYVel = 100;
 	}
 	
 	@Override
 	public void update(float dt)
 	{
 		super.update(dt);
-	}
-
-	@Override
-	public void draw()
-	{
+		
+		vely -= gravity;
+		
+		if(vely > maxYVel) vely = maxYVel;
+		if(vely < -maxYVel) vely = -maxYVel;
+		
+		int sign = 0;
+		
+		if(state == JumpmanState.idle)
+		{
+			if(Gdx.input.isKeyPressed(Keys.RIGHT))
+				sign++;
+			if(Gdx.input.isKeyPressed(Keys.LEFT))
+				sign--;
+			if(Gdx.input.isKeyPressed(Keys.A))
+				jump();
+			velx = xVelocity * sign;
+			
+			// Climb the ladder
+			if(collideWith(pos.x,pos.y,"ladder") != null)
+			{
+				if(Gdx.input.isKeyJustPressed(Keys.UP))
+				{
+					state = JumpmanState.climbing;
+					vely=0;
+					velx=0;
+				}			
+			}
+		}
+		
+		if(state == JumpmanState.climbing)
+		{
+			sign = 0;
+			// Climb the ladder
+			if(collideWith(pos.x,pos.y,"ladder") != null || collideWith(pos.x, pos.y,"solid") != null)
+			{
+				if(Gdx.input.isKeyPressed(Keys.UP))
+					sign += 1;
+				if(Gdx.input.isKeyPressed(Keys.DOWN))
+					sign -= 1;				
+			}
+			else
+			{
+				state = JumpmanState.idle;
+			}
+			vely = xVelocity * sign;
+		}
+		
+		// Vertical collision
+		Entity wall = collideWith(pos.x, pos.y+(vely*dt),"solid");
+		if(wall != null)
+		{
+			if( (wall.getPos().y + wall.getHitbox().y + wall.getHitbox().height) < (pos.y + hitbox.y))
+			{
+				while(collideWith(pos.x,pos.y+Math.signum(vely),"solid") == null)
+					pos.y += Math.signum(vely);
+				
+				state = JumpmanState.idle;
+				vely = 0;
+			}
+		}
+		
+		// Horizontal collision
+		wall = collideWith(pos.x+(velx*dt), pos.y,"solid");
+		if(wall != null)
+			if(pos.x + (hitbox.width/2) > wall.getX() && collideWith(pos.x, pos.y+1, "solid") == null)
+				pos.y++;
 		
 	}
 
+	@Override
+	public void draw(Batch batch)
+	{
+		batch.draw(graphic, pos.x, pos.y, 16, 16);
+	}
+
+	public void jump()
+	{
+		vely = jumpForce;
+		state = JumpmanState.jumping;
+	}
+	
 	@Override
 	public void keyUp(int keycode)
 	{
@@ -45,9 +133,11 @@ public class Jumpman extends Entity
 		if(state == JumpmanState.idle)
 		{
 			if(keycode == Keys.RIGHT)
-				velx = vel;
+				velx = xVelocity;
 			if(keycode == Keys.LEFT)
-				velx = -vel;
+				velx = -xVelocity;
+			if(keycode == Keys.A)
+				jump();
 		} 
 			
 	}
