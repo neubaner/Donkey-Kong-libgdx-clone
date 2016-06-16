@@ -1,5 +1,6 @@
 package com.donkeykong.game.Entities;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -13,7 +14,9 @@ public class Barrel extends Entity
 	private float gravity = 10f;
 	private float maxYVel = 100f;
 	
-	private TextureRegion graphic = new TextureRegion(Assets.tileset,120,0,16,16);
+	//Animation
+	private float elapsed;
+	private Animation walkAnimation;
 	
 	public Barrel(float x, float y, boolean moveRight)
 	{
@@ -21,12 +24,19 @@ public class Barrel extends Entity
 		
 		if(moveRight)velx = velocity;
 		else velx = -velocity;
+		
+		elapsed = 0;
+		walkAnimation = new Animation(1/5f, new TextureRegion(Assets.tileset,136,0,16,16),
+											new TextureRegion(Assets.tileset,152,0,16,16),
+											new TextureRegion(Assets.tileset,168,0,16,16),
+											new TextureRegion(Assets.tileset,184,0,16,16));
 	}
 	
 	@Override
 	public void update(float dt)
 	{
 		super.update(dt);
+		elapsed += dt;
 		
 		vely -= gravity;
 		
@@ -57,7 +67,7 @@ public class Barrel extends Entity
 	@Override
 	public void draw(Batch batch)
 	{
-		batch.draw(graphic, pos.x, pos.y, 16, 16);
+		batch.draw(walkAnimation.getKeyFrame(elapsed, true),pos.x, pos.y);
 	}
 
 }

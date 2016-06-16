@@ -18,11 +18,9 @@ public class Level1 extends World
 	public Level1(OrthographicCamera camera)
 	{
 		super(camera);
-		jumpman = new Jumpman(9,9);
 		solids = new ArrayList<Solid>();
 		shouldDrawHitbox = false;
 		
-		addEntity(jumpman);
 		addEntity(new Barrel(40,220,true));
 		
 		Solid solid;
@@ -139,6 +137,9 @@ public class Level1 extends World
 			solids.add(solid);
 			addEntity(solid);
 		}
+		
+		jumpman = new Jumpman(9,9);
+		addEntity(jumpman);
 	}
 	
 	@Override

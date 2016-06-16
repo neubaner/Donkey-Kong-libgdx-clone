@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -19,8 +20,14 @@ public class Jumpman extends Entity
 	private float jumpForce;
 	private float gravity;
 	private float maxYVel;
+	private boolean facingRight;
 	
-	private TextureRegion graphic = new TextureRegion(Assets.tileset,8,0,16,16);
+	//Animation
+	private float elapsed = 0;
+	private Animation walkAnimation;
+	private Animation climbingAnimation;
+	private TextureRegion jumpingAnimation = new TextureRegion(Assets.tileset,24,0,16,16);
+	private TextureRegion standing = new TextureRegion(Assets.tileset,8,0,16,16);
 	
 	public Jumpman(float x, float y)
 	{
@@ -30,12 +37,24 @@ public class Jumpman extends Entity
 		jumpForce = 300;
 		gravity = 10;
 		maxYVel = 100;
+		facingRight = true;
+		
+		walkAnimation = new Animation(1/15f,new TextureRegion(Assets.tileset,24,0,16,16),
+											new TextureRegion(Assets.tileset,8,0,16,16),
+											new TextureRegion(Assets.tileset,40,0,16,16));
+		
+		climbingAnimation = new Animation(1/5f, new TextureRegion(Assets.tileset,56,0,16,16),
+												 new TextureRegion(Assets.tileset,72,0,16,16));
 	}
 	
 	@Override
 	public void update(float dt)
 	{
 		super.update(dt);
+		elapsed += dt;
+		
+		if(velx > 0)facingRight = true;
+		if(velx < 0)facingRight = false;
 		
 		vely -= gravity;
 		
@@ -118,7 +137,40 @@ public class Jumpman extends Entity
 	@Override
 	public void draw(Batch batch)
 	{
-		batch.draw(graphic, pos.x, pos.y, 16, 16);
+		if(state == JumpmanState.idle)
+		{
+			// If he's moving
+			if(velx != 0)
+				drawJumpman(batch, walkAnimation.getKeyFrame(elapsed,true));
+			else
+				drawJumpman(batch, standing);
+		}
+		if(state == JumpmanState.jumping)
+		{
+			drawJumpman(batch, jumpingAnimation);
+		}
+		if(state == JumpmanState.climbing)
+		{
+			// If he's moving
+			if(vely != 0)
+				drawJumpman(batch, climbingAnimation.getKeyFrame(elapsed,true));
+			else
+				drawJumpman(batch, climbingAnimation.getKeyFrames()[0]);
+		}
+	}
+	
+	private void drawJumpman(Batch batch, TextureRegion graphic)
+	{
+		batch.draw(graphic,
+				   pos.x,
+				   pos.y,
+				   8,
+				   8,
+				   16,
+				   16,
+				   facingRight ? -1 : 1,
+				   1,
+				   0);
 	}
 
 	public void jump()
