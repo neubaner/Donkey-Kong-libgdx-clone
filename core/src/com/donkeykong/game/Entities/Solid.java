@@ -13,7 +13,7 @@ public class Solid extends Entity
 	public Solid(int x, int y, int width, int height)
 	{
 		super(new Vector2(x,y),new Rectangle(0,0,width,height),"solid");
-		hitboxColor = Color.RED;
+		hitboxColor = Color.GREEN;
 	}
 	
 	@Override

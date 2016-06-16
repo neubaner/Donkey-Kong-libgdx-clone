@@ -5,10 +5,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.donkeykong.game.Assets;
+import com.donkeykong.game.Game;
 
 public class Barrel extends Entity
 {
-	private float velocity = 35f;
+	private float velocity = 50f;
 	private float gravity = 10f;
 	private float maxYVel = 100f;
 	
@@ -43,6 +44,13 @@ public class Barrel extends Entity
 				
 				vely = 0;
 			}
+		}
+		
+		// Change velocity's direction
+		if(pos.y > 9)
+		{
+			if(pos.x + hitbox.x < 0) velx = -velx;
+			if(pos.x + hitbox.x + hitbox.width > Game.WIDTH) velx = -velx;
 		}
 	}
 

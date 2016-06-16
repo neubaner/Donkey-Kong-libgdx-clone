@@ -1,5 +1,7 @@
 package com.donkeykong.game.Entities;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -7,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.donkeykong.game.Assets;
+import com.donkeykong.game.Game;
 import com.donkeykong.game.JumpmanState;
 
 public class Jumpman extends Entity
@@ -21,7 +24,7 @@ public class Jumpman extends Entity
 	
 	public Jumpman(float x, float y)
 	{
-		super(new Vector2(x,y),new Rectangle(4,0,9,12), "Jumpman");
+		super(new Vector2(x,y),new Rectangle(4,0,9,11), "Jumpman");
 		state = JumpmanState.idle; 
 		xVelocity = 35;
 		jumpForce = 300;
@@ -82,24 +85,33 @@ public class Jumpman extends Entity
 		}
 		
 		// Vertical collision
-		Entity wall = collideWith(pos.x, pos.y+(vely*dt),"solid");
-		if(wall != null)
+		ArrayList<Entity> wallList = world.getEntitiesByTag("solid");
+		for(Entity wall : wallList)
 		{
-			if( (wall.getPos().y + wall.getHitbox().y + wall.getHitbox().height) < (pos.y + hitbox.y))
+			if(collideWith(pos.x, pos.y+(vely*dt),wall))
 			{
-				while(collideWith(pos.x,pos.y+Math.signum(vely),"solid") == null)
-					pos.y += Math.signum(vely);
-				
-				state = JumpmanState.idle;
-				vely = 0;
+				if( (wall.getPos().y + wall.getHitbox().y + wall.getHitbox().height) < (pos.y + hitbox.y))
+				{
+					while(collideWith(pos.x,pos.y+Math.signum(vely),"solid") == null)
+						pos.y += Math.signum(vely);
+					
+					state = JumpmanState.idle;
+					vely = 0;
+				}
 			}
 		}
 		
 		// Horizontal collision
-		wall = collideWith(pos.x+(velx*dt), pos.y,"solid");
-		if(wall != null)
-			if(pos.x + (hitbox.width/2) > wall.getX() && collideWith(pos.x, pos.y+1, "solid") == null)
-				pos.y++;
+		for(Entity wall : wallList)
+		{
+			if(collideWith(pos.x+(velx*dt), pos.y, wall))
+				if(pos.x + hitbox.x + (hitbox.width/2) > wall.getX() && collideWith(pos.x, pos.y+1, "solid") == null)
+					pos.y++;
+		}
+		
+		// Snap to screen
+		if(pos.x + hitbox.x < 0) pos.x = -hitbox.x;
+		if(pos.x + hitbox.x + hitbox.width > Game.WIDTH) pos.x = Game.WIDTH - hitbox.width - hitbox.x;
 		
 	}
 
