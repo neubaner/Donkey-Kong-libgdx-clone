@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.donkeykong.game.Entities.Barrel;
 import com.donkeykong.game.Entities.Jumpman;
+import com.donkeykong.game.Entities.Kong;
 import com.donkeykong.game.Entities.Ladder;
+import com.donkeykong.game.Entities.Pauline;
 import com.donkeykong.game.Entities.Solid;
 
 public class Level1 extends World
@@ -20,8 +21,6 @@ public class Level1 extends World
 		super(camera);
 		solids = new ArrayList<Solid>();
 		shouldDrawHitbox = false;
-		
-		addEntity(new Barrel(40,220,true));
 		
 		Solid solid;
 		
@@ -140,6 +139,8 @@ public class Level1 extends World
 		
 		jumpman = new Jumpman(9,9);
 		addEntity(jumpman);
+		addEntity(new Pauline(88,201));
+		addEntity(new Kong(16,173,jumpman));
 	}
 	
 	@Override
@@ -149,5 +150,6 @@ public class Level1 extends World
 		if(Gdx.input.isKeyJustPressed(Keys.Q))
 			shouldDrawHitbox = !shouldDrawHitbox;
 	}
+	
 
 }

@@ -10,7 +10,7 @@ import com.donkeykong.game.Game;
 
 public class Barrel extends Entity
 {
-	private float velocity = 50f;
+	private float velocity = 53f;
 	private float gravity = 10f;
 	private float maxYVel = 100f;
 	

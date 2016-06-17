@@ -31,7 +31,7 @@ public class Jumpman extends Entity
 	
 	public Jumpman(float x, float y)
 	{
-		super(new Vector2(x,y),new Rectangle(4,0,9,11), "Jumpman");
+		super(new Vector2(x,y),new Rectangle(4,0,9,11), "jumpman");
 		state = JumpmanState.idle; 
 		xVelocity = 35;
 		jumpForce = 300;
@@ -126,6 +126,16 @@ public class Jumpman extends Entity
 			if(collideWith(pos.x+(velx*dt), pos.y, wall))
 				if(pos.x + hitbox.x + (hitbox.width/2) > wall.getX() && collideWith(pos.x, pos.y+1, "solid") == null)
 					pos.y++;
+		}
+		
+		if(collideWith(pos.x, pos.y, "barrel") != null)
+		{
+			world.setResetFlag(true);
+		}
+		
+		if(collideWith(pos.x, pos.y, "pauline") != null)
+		{
+			world.setResetFlag(true);
 		}
 		
 		// Snap to screen

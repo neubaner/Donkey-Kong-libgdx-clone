@@ -15,6 +15,9 @@ public class World implements InputProcessor
 	protected OrthographicCamera camera;
 	private ShapeRenderer shapeRenderer;
 	public boolean shouldDrawHitbox = true;
+	public boolean resetFlag = false;
+	
+	private ArrayList<Entity> added = new ArrayList<Entity>();
 	
 	public World(OrthographicCamera camera)
 	{
@@ -61,8 +64,17 @@ public class World implements InputProcessor
 	public Entity addEntity(Entity e)
 	{
 		e.setWorld(this);
-		entities.add(e);
+		added.add(e);
 		return e;
+	}
+	
+	public void updateList()
+	{
+		for(Entity e : added)
+		{
+			entities.add(e);
+		}
+		added.clear();
 	}
 	
 	public Entity removeEntity(Entity e)
@@ -82,6 +94,16 @@ public class World implements InputProcessor
 		}
 		
 		return list;
+	}
+
+	public boolean getResetFlag()
+	{
+		return resetFlag;
+	}
+	
+	public void setResetFlag(boolean reset)
+	{
+		resetFlag = reset;
 	}
 
 	@Override

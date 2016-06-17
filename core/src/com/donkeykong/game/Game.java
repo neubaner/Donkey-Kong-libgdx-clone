@@ -41,7 +41,10 @@ public class Game extends ApplicationAdapter
 		world.update(Gdx.graphics.getDeltaTime());
 		world.draw(batch);
 		world.drawHitbox();
+		world.updateList();
 		
+		if(world.resetFlag)
+			world = new Level1(camera);
 	}
 	
 	public void changeWorld(World world)
